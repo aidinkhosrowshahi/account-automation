@@ -1,34 +1,30 @@
 # account-automation-serverless
 
-This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
+I developed a custom serverless solution to automate account initialization tasks for newly created accounts:
 
-- hello_world - Code for the application's Lambda function.
-- events - Invocation events that you can use to invoke the function.
-- tests - Unit tests for the application code. 
-- template.yaml - A template that defines the application's AWS resources.
+1. Availability Zone Alignment: Ensures consistent availability zone mappings for mutli accounts across the organization. 
+2. Service Limit Increase: Streamlines the process for adjusting service limits.
+3. Enterprise Support Plan Activation: Facilitates the activation of enterprise-level support plans.
 
-The application uses several AWS resources, including Lambda functions and an API Gateway API. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
+For this solution, I used serverless managed services including AWS StepFunctions, AWS Lambda, and EventBridge. It is low-code and customizable as it utilizes AWS StepFunctions.
 
-If you prefer to use an integrated development environment (IDE) to build and test your application, you can use the AWS Toolkit.  
-The AWS Toolkit is an open source plug-in for popular IDEs that uses the SAM CLI to build and deploy serverless applications on AWS. The AWS Toolkit also adds a simplified step-through debugging experience for Lambda function code. See the following links to get started.
+## How it works
 
-* [CLion](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
-* [GoLand](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
-* [IntelliJ](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
-* [WebStorm](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
-* [Rider](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
-* [PhpStorm](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
-* [PyCharm](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
-* [RubyMine](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
-* [DataGrip](https://docs.aws.amazon.com/toolkit-for-jetbrains/latest/userguide/welcome.html)
-* [VS Code](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/welcome.html)
-* [Visual Studio](https://docs.aws.amazon.com/toolkit-for-visual-studio/latest/user-guide/welcome.html)
 
 ## Deploy the sample application
 
-The Serverless Application Model Command Line Interface (SAM CLI) is an extension of the AWS CLI that adds functionality for building and testing Lambda applications. It uses Docker to run your functions in an Amazon Linux environment that matches Lambda. It can also emulate your application's build environment and API.
+When an admin creates an AWS account using the AWS Organization console or API, the automation begins to fulfill AZ alignment, limit increase, and enterprise support activation requests for newly created accounts.
 
-To use the SAM CLI, you need the following tools.
+Below architecture diagram explains the flow.
+
+1. The user creates an AWS account using the organization console or API.
+2. When EventBridge receives an event that matches the rule 'AccountCreationResult', it sends the event to AWS Step Functions as a target.
+3. The StateMachine invokes three Lambda functions to complete requests for:
+    1. Availability Zone (AZ) alignment - The AZ requester Lambda function submits a support case in the newly created account for the support team to complete the AZ alignment request.
+    2. Enterprise support activation - The Support Activator function submits a support case for the AWS concierge team to enable the Enterprise support plan for the newly created account.
+    3. Service limit increase - The Limit Increase function submits a service quota limit increase request in the new created account. The limit template can be customized based on your use case.
+
+
 
 * SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 * [Python 3 installed](https://www.python.org/downloads/)
