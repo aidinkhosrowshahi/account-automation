@@ -1,0 +1,41 @@
+ {
+  "version": "0",
+  "id": "55d30c96-4ae6-7e14-6827-9b232edf0a4d",
+  "detail-type": "AWS Service Event via CloudTrail",
+  "source": "aws.organizations",
+  "account": "2344555435",
+  "time": "2024-03-25T16:22:17Z",
+  "region": "us-east-1",
+  "resources": [],
+  "detail": {
+    "eventVersion": "1.08",
+    "userIdentity": {
+      "accountId": "2344555435",
+      "invokedBy": "AWS Internal"
+    },
+    "eventTime": "2024-03-25T16:22:17Z",
+    "eventSource": "organizations.amazonaws.com",
+    "eventName": "CreateAccountResult",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "AWS Internal",
+    "userAgent": "AWS Internal",
+    "requestParameters": null,
+    "responseElements": null,
+    "eventID": "5e277551-91b7-4695-9600-f0cb3ddb3d3b",
+    "readOnly": false,
+    "eventType": "AwsServiceEvent",
+    "managementEvent": true,
+    "recipientAccountId": "571724487590",
+    "serviceEventDetails": {
+      "createAccountStatus": {
+        "id": "car-fb33650bcbda4b62822243be2e50fcab",
+        "state": "SUCCEEDED",
+        "accountName": "****",
+        "accountId": "788533456654",
+        "requestedTimestamp": "Mar 25, 2024 4:22:14 PM",
+        "completedTimestamp": "Mar 25, 2024 4:22:17 PM"
+      }
+    },
+    "eventCategory": "Management"
+  }
+}

@@ -1,0 +1,247 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  account-automation-serverless
+
+  Sample SAM Template for account-automation-serverless
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+
+Parameters: 
+  AzAlignmentReferenceAccount: 
+    Description: "AZ alignment reference Account"
+    Type: String
+    Default: '12345678910'
+
+  LimitRequestRegions: 
+    Description: "Limit Request Regions"
+    Type: String
+    Default: 'us-east-1,us-east-2,us-west-1,us-west-2,eu-west-1,eu-west-2,eu-central-1,ap-southeast-1,ap-northeast-1,ap-south-1,ap-southeast-2,sa-east-1'
+
+  ccEmailAddresses:
+    Description: "Enter cc email for support cases creation"
+    Type: String
+    Default: 'example@mycompany.com'
+
+
+Globals:
+  Function:
+    Timeout: 30
+
+Resources:
+  AZrequester:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: AZRequesterLambda/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          ReferenceAccount: !Ref AzAlignmentReferenceAccount
+      Role: !GetAtt AZrequesterExecutionRole.Arn
+  
+  EnableSupport:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: enable-support/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          ccEmailAddresses: !Ref ccEmailAddresses
+      Role: !GetAtt AZrequesterExecutionRole.Arn
+      
+  LimitIncrease:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: limit-increase/
+      
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Timeout: 60
+      Role: 
+        Fn::GetAtt: 
+          - LimitIncreaseExecutionRole
+          - Arn
+      Environment:
+        Variables:
+          LimitRequestRegions: !Ref LimitRequestRegions
+      
+      
+      
+      
+          
+  AZrequesterExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      Policies:
+        - PolicyName: AccountInitialization
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - support:CreateCase
+                  
+                Resource: '*'
+              - Effect: Allow
+                Action: 
+                  - sts:AssumeRole
+                Resource: 'arn:aws:iam::*:role/OrganizationAccountAccessRole'
+                
+  LimitIncreaseExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      Policies:
+        - PolicyName: AccountInitialization
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - support:CreateCase
+                  
+                Resource: '*'
+              - Effect: Allow
+                Action: 
+                  - sts:AssumeRole
+                Resource: 'arn:aws:iam::*:role/OrganizationAccountAccessRole'
+              
+        
+  AccountCreationStepFunction:
+    Type: AWS::Serverless::StateMachine # More info about State Machine Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-statemachine.html
+    Properties:
+      DefinitionUri: stepfunction/StateMachine.asl.json
+      DefinitionSubstitutions:
+        AZrequesterArn: !GetAtt AZrequester.Arn
+        LimitIncreaseArn: !GetAtt LimitIncrease.Arn
+        EnableSupportArn: !GetAtt EnableSupport.Arn
+      Role:
+        Fn::GetAtt: [ MyStateMachineExecutionRole, Arn ]
+      Type: EXPRESS
+      Logging:
+        Destinations:
+          - CloudWatchLogsLogGroup:
+              LogGroupArn: !GetAtt AccountCreationStepFunctionLogGroup.Arn
+        IncludeExecutionData: false
+        Level: 'ALL'
+        
+  AccountCreationStepFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join [ "/", [ "stepfunctions", AccountAutomationStepFunction]]
+  
+  MyStateMachineExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - !Sub states.${AWS::Region}.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: LambdaExecute
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "lambda:InvokeFunction"
+                Resource: 
+                  - !GetAtt AZrequester.Arn
+                  - !GetAtt LimitIncrease.Arn
+                  - !GetAtt EnableSupport.Arn
+              - Effect: Allow
+                Action:
+                  - "logs:*"
+                  
+                Resource: "*"
+                
+                
+                
+        
+                
+  EventBridgeRule: 
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: This rule will send account creation organizations event to target
+      EventPattern: 
+        source: 
+          - "aws.organizations"
+        detail: 
+          eventName: 
+            - "CreateAccountResult"
+          serviceEventDetails:
+            createAccountStatus:
+              state:
+                - "SUCCEEDED"
+            
+      State: "ENABLED"
+      Targets:
+        -
+          Arn: !GetAtt AccountCreationStepFunction.Arn
+          Id: MyStateMachineTarget
+          RoleArn: !GetAtt EventBridgeRuleRole.Arn
+  
+  EventBridgeRuleRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - 
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - 
+          PolicyName: EventBridgeToStepFunctionsPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - states:StartExecution
+                Resource: !GetAtt AccountCreationStepFunction.Arn
+    
+
+  
+  
+  
+  
+  
+  
