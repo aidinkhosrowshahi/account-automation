@@ -40,6 +40,7 @@ Resources:
       Environment:
         Variables:
           ReferenceAccount: !Ref AzAlignmentReferenceAccount
+          ccEmailAddresses: !Ref ccEmailAddresses
       Role: !GetAtt AZrequesterExecutionRole.Arn
   
   EnableSupport:
@@ -71,10 +72,6 @@ Resources:
         Variables:
           LimitRequestRegions: !Ref LimitRequestRegions
       
-      
-      
-      
-          
   AZrequesterExecutionRole:
     Type: AWS::IAM::Role
     Properties:

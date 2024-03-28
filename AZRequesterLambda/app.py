@@ -4,6 +4,8 @@ import os
 # Fetching environment variables
 ReferenceAccount = os.environ['ReferenceAccount']
 regions = "eu-west-1, sa-east-1, us-east-1, us-west-1, us-west-2, ap-northeast-1, ap-southeast-1, ap-southeast-2"
+case_cc_emails = os.environ['ccEmailAddresses']
+
 
 def create_case(account_id, reference_account, regions):
     """
@@ -38,7 +40,7 @@ def create_case(account_id, reference_account, regions):
         severityCode='low',
         categoryCode='billing',
         communicationBody=f'Please align account {account_id} to match the alignment of AZs in account {reference_account} in regions {regions}.',
-        ccEmailAddresses=['example@twilio.com'],
+        ccEmailAddresses=[case_cc_emails],
         language='en',
         issueType='technical'
     )
