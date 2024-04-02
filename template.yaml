@@ -34,7 +34,7 @@ Resources:
     Properties:
       CodeUri: AZRequesterLambda/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.10
       Architectures:
         - x86_64
       Environment:
@@ -48,7 +48,7 @@ Resources:
     Properties:
       CodeUri: enable-support/
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.10
       Architectures:
         - x86_64
       Environment:
@@ -62,7 +62,7 @@ Resources:
       CodeUri: limit-increase/
       
       Handler: app.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.10
       Timeout: 60
       Role: 
         Fn::GetAtt: 
