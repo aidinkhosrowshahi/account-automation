@@ -25,7 +25,7 @@
     "readOnly": false,
     "eventType": "AwsServiceEvent",
     "managementEvent": true,
-    "recipientAccountId": "571724487590",
+    "recipientAccountId": "2344555435",
     "serviceEventDetails": {
       "createAccountStatus": {
         "id": "car-fb33650bcbda4b62822243be2e50fcab",
