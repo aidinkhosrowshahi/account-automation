@@ -60,6 +60,7 @@ Resources:
       Environment:
         Variables:
           ccEmailAddresses: !Ref ccEmailAddresses
+          SupportPlan: !Ref SupportPlan
       Role: !GetAtt AZrequesterExecutionRole.Arn
       
   LimitIncrease:

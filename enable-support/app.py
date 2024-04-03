@@ -4,7 +4,7 @@ import os
 
 
 ccEmailAddresses = os.environ['ccEmailAddresses']
-support_plan = os.environ['SupportPlan']
+SupportPlan = os.environ['SupportPlan']
 
 
 def create_case(account_ids):
@@ -35,7 +35,7 @@ def create_case(account_ids):
     case_category_code = 'other-account-issues'
     case_service_code = 'customer-account'
     accounts = str(account_ids).replace("'", "")
-    case_communication_body = f'Hi AWS! Please enable {support_plan} on new account IDs {accounts} with the same ' \
+    case_communication_body = f'Hi AWS! Please enable {SupportPlan} on new account IDs {accounts} with the same ' \
         f'support plan as this Payer account. This case was created automatically - please resolve when done.'
     case_cc_emails = os.environ['ccEmailAddresses']
     case_issue_type = 'customer-service'
