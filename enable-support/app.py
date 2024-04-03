@@ -14,18 +14,18 @@ def create_case(account_ids):
     :param account_ids: list of str
     :return: string
     """
-    sts = boto3.client('sts')
-    response = sts.assume_role(
-        RoleArn='arn:aws:iam::{}:role/OrganizationAccountAccessRole'.format(account_ids),
-        RoleSessionName='newsession'
-    )
+    # sts = boto3.client('sts')
+    # response = sts.assume_role(
+    #     RoleArn='arn:aws:iam::{}:role/OrganizationAccountAccessRole'.format(account_ids),
+    #     RoleSessionName='newsession'
+    # )
 
     support = boto3.client(
         'support',
-        region_name='us-east-1',
-        aws_access_key_id=response["Credentials"]["AccessKeyId"],
-        aws_secret_access_key=response["Credentials"]["SecretAccessKey"],
-        aws_session_token=response["Credentials"]["SessionToken"]
+        region_name='us-east-1'
+        # aws_access_key_id=response["Credentials"]["AccessKeyId"],
+        # aws_secret_access_key=response["Credentials"]["SecretAccessKey"],
+        # aws_session_token=response["Credentials"]["SessionToken"]
     )
 
 

@@ -18,19 +18,19 @@ def create_case(account_id, reference_account, regions):
     """
     
     # Assume role for the target account
-    sts = boto3.client('sts')
-    response = sts.assume_role(
-        RoleArn=f'arn:aws:iam::{account_id}:role/OrganizationAccountAccessRole',
-        RoleSessionName='newsession'
-    )
+    # sts = boto3.client('sts')
+    # response = sts.assume_role(
+    #     RoleArn=f'arn:aws:iam::{account_id}:role/OrganizationAccountAccessRole',
+    #     RoleSessionName='newsession'
+    # )
     
     # Initialize Support client with the assumed credentials
     support = boto3.client(
         'support',
-        region_name='us-east-1',
-        aws_access_key_id=response["Credentials"]["AccessKeyId"],
-        aws_secret_access_key=response["Credentials"]["SecretAccessKey"],
-        aws_session_token=response["Credentials"]["SessionToken"]
+        region_name='us-east-1'
+        # aws_access_key_id=response["Credentials"]["AccessKeyId"],
+        # aws_secret_access_key=response["Credentials"]["SecretAccessKey"],
+        # aws_session_token=response["Credentials"]["SessionToken"]
     )
     
     # Create support case
