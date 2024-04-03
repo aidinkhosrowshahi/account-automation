@@ -22,6 +22,12 @@ Parameters:
     Description: "Enter cc email for support cases creation"
     Type: String
     Default: 'example@mycompany.com'
+    
+  SupportPlan:
+    Description: "Enter support Plan"
+    Type: String
+    Default: 'Enterprise Support Plan'
+    
 
 
 Globals:
