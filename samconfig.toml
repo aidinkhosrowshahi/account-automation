@@ -7,5 +7,5 @@ region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 disable_rollback = true
-parameter_overrides = "AzAlignmentReferenceAccount=\"234324325325\" LimitRequestRegions=\"us-east-1,us-east-2,us-west-1,us-west-2,eu-west-1,eu-west-2,eu-central-1,ap-southeast-1,ap-northeast-1,ap-south-1,ap-southeast-2,sa-east-1\" ccEmailAddresses=\"user@example.com\""
+parameter_overrides = "AzAlignmentReferenceAccount=\"234324325325\" LimitRequestRegions=\"us-east-1,us-east-2,us-west-1,us-west-2,eu-west-1,eu-west-2,eu-central-1,ap-southeast-1,ap-northeast-1,ap-south-1,ap-southeast-2,sa-east-1\" ccEmailAddresses=\"user@example.com\" SupportPlan=\"Enterprise Support Plan\""
 image_repositories = []

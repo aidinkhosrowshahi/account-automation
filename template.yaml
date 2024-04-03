@@ -240,6 +240,24 @@ Resources:
                 Action:
                   - states:StartExecution
                 Resource: !GetAtt AccountCreationStepFunction.Arn
+
+Outputs:
+  AccountCreationStepFunction:
+    Value: !Ref AccountCreationStepFunction
+    Description: AccountCreationStepFunction Arn
+  
+  LimitIncrease:
+    Value: !Ref LimitIncrease
+    Description: LimitIncrease Arn
+    
+  EnableSupport:
+    Value: !Ref EnableSupport
+    Description: EnableSupport Arn
+    
+  AZrequester:
+    Value: !Ref AZrequester
+    Description: AZrequester Arn
+  
     
 
   
